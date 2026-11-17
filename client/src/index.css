@@ -1,0 +1,32 @@
+:root {
+  color-scheme: light;
+  --ink: #171717;
+  --muted: #6b6b6b;
+  --line: #e6e6e6;
+  --soft: #f6f6f6;
+  --danger: #b42318;
+  --ok: #17663a;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #fff;
+  color: var(--ink);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}

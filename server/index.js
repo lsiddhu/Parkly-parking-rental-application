@@ -16,21 +16,32 @@ const razorpayWebhookRoutes = require("./routes/razorpayWebhookRoutes");
 const startBookingCleanup = require("./jobs/bookingCleanup");
 
 // CORS configuration
+const normalizeOrigin = (url) => url?.trim().replace(/\/+$/, "");
+
 const allowedOrigins = [
+  "https://parkly-parking-rental-application.vercel.app",
   process.env.CLIENT_URL,
   "http://localhost:5173",
-].filter(Boolean);
+]
+  .filter(Boolean)
+  .map(normalizeOrigin);
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    const normalizedOrigin = normalizeOrigin(origin);
+
+    if (!origin || allowedOrigins.includes(normalizedOrigin)) {
       return callback(null, true);
     }
+
+    console.error("CORS rejected origin:", origin);
+    console.error("Allowed origins:", allowedOrigins);
 
     return callback(new Error("Not allowed by CORS"));
   },
   credentials: true,
 }));
+
 
 app.use(helmet());
 
@@ -55,7 +66,7 @@ app.use((req, res, next) => {
 
   const origin = req.get("Origin");
 
-  if (!origin || !allowedOrigins.includes(origin)) {
+if (!origin || !allowedOrigins.includes(normalizeOrigin(origin))) {
     return res.status(403).json({
       success: false,
       message: "Request origin not allowed.",

@@ -5,8 +5,8 @@ import ParkingMap from "../components/ParkingMap";
 import "../App.css";
 import "./Auth.css";
 
-const API_URL = "http://localhost:5000/api/parking-spaces";
-const BOOKING_API = "http://localhost:5000/api/bookings";
+const API_URL =  `${import.meta.env.VITE_API_URL}/api/parking-spaces`;;
+const BOOKING_API = `${import.meta.env.VITE_API_URL}/api/bookings`;
 
 function DriverPage() {
   const [spaces, setSpaces] = useState([]);

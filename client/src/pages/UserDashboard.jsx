@@ -3,8 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import "./UserDashboard.css";
 
-const BOOKING_API = "http://localhost:5000/api/bookings";
-const PARKING_API = "http://localhost:5000/api/parking-spaces";
+const BOOKING_API = `${import.meta.env.VITE_API_URL}/api/bookings`;
+const PARKING_API = `${import.meta.env.VITE_API_URL}/api/parking-spaces`;
 
 function UserDashboard({ user }) {
   const [bookings, setBookings] = useState([]);

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import MapPicker from "../components/MapPicker";
 import "./Auth.css";
-const API_URL = "http://localhost:5000/api/parking-spaces";
+const API_URL = `${import.meta.env.VITE_API_URL}/api/parking-spaces`;
 
 const emptyForm = {
   name: "",

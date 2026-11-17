@@ -26,7 +26,7 @@ const allowedOrigins = [
   .filter(Boolean)
   .map(normalizeOrigin);
 
-app.use(cors({
+const corsOptions = {
   origin: (origin, callback) => {
     const normalizedOrigin = normalizeOrigin(origin);
 
@@ -35,13 +35,14 @@ app.use(cors({
     }
 
     console.error("CORS rejected origin:", origin);
-    console.error("Allowed origins:", allowedOrigins);
-
-    return callback(new Error("Not allowed by CORS"));
+    return callback(null, false);
   },
   credentials: true,
-}));
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
 
+app.use(cors(corsOptions));
 
 app.use(helmet());
 
@@ -56,8 +57,14 @@ app.use(
 // Normal middleware
 app.use(express.json({ limit: "10kb" }));
 app.use(cookieParser());
+
 // CSRF protection: validate origins for state-changing requests
 app.use((req, res, next) => {
+  // Allow CORS preflight requests
+  if (req.method === "OPTIONS") {
+    return next();
+  }
+
   const unsafeMethods = ["POST", "PUT", "PATCH", "DELETE"];
 
   if (!unsafeMethods.includes(req.method)) {
@@ -66,7 +73,7 @@ app.use((req, res, next) => {
 
   const origin = req.get("Origin");
 
-if (!origin || !allowedOrigins.includes(normalizeOrigin(origin))) {
+  if (!origin || !allowedOrigins.includes(normalizeOrigin(origin))) {
     return res.status(403).json({
       success: false,
       message: "Request origin not allowed.",

@@ -15,23 +15,26 @@ const razorpayWebhookRoutes = require("./routes/razorpayWebhookRoutes");
 
 const startBookingCleanup = require("./jobs/bookingCleanup");
 
-// Middleware
+// CORS configuration
 const allowedOrigins = [
   process.env.CLIENT_URL,
   "http://localhost:5173",
 ].filter(Boolean);
 
 app.use(cors({
-  origin: allowedOrigins,
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"));
+  },
   credentials: true,
 }));
+
 app.use(helmet());
 
-app.use(express.json({
-  limit: "10kb",
-}));
-
-// Razorpay webhook must receive the raw request body.
+// Razorpay webhook must receive raw request body.
 // Keep this BEFORE express.json().
 app.use(
   "/api/webhooks/razorpay",
@@ -40,8 +43,27 @@ app.use(
 );
 
 // Normal middleware
-app.use(express.json());
+app.use(express.json({ limit: "10kb" }));
 app.use(cookieParser());
+// CSRF protection: validate origins for state-changing requests
+app.use((req, res, next) => {
+  const unsafeMethods = ["POST", "PUT", "PATCH", "DELETE"];
+
+  if (!unsafeMethods.includes(req.method)) {
+    return next();
+  }
+
+  const origin = req.get("Origin");
+
+  if (!origin || !allowedOrigins.includes(origin)) {
+    return res.status(403).json({
+      success: false,
+      message: "Request origin not allowed.",
+    });
+  }
+
+  next();
+});
 
 // API routes
 app.get("/", (req, res) => {

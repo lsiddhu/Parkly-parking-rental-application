@@ -170,6 +170,23 @@ exports.Prisma.BookingScalarFieldEnum = {
   refundProcessedAt: 'refundProcessedAt'
 };
 
+exports.Prisma.EmailJobScalarFieldEnum = {
+  id: 'id',
+  bookingId: 'bookingId',
+  recipient: 'recipient',
+  subject: 'subject',
+  html: 'html',
+  status: 'status',
+  attempts: 'attempts',
+  nextRetryAt: 'nextRetryAt',
+  lockedAt: 'lockedAt',
+  lastError: 'lastError',
+  sentAt: 'sentAt',
+  dedupeKey: 'dedupeKey',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -210,10 +227,18 @@ exports.RefundStatus = exports.$Enums.RefundStatus = {
   FAILED: 'FAILED'
 };
 
+exports.EmailJobStatus = exports.$Enums.EmailJobStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  SENT: 'SENT',
+  FAILED: 'FAILED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   ParkingSpace: 'ParkingSpace',
-  Booking: 'Booking'
+  Booking: 'Booking',
+  EmailJob: 'EmailJob'
 };
 
 /**

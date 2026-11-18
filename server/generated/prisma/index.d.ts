@@ -28,6 +28,11 @@ export type ParkingSpace = $Result.DefaultSelection<Prisma.$ParkingSpacePayload>
  * 
  */
 export type Booking = $Result.DefaultSelection<Prisma.$BookingPayload>
+/**
+ * Model EmailJob
+ * 
+ */
+export type EmailJob = $Result.DefaultSelection<Prisma.$EmailJobPayload>
 
 /**
  * Enums
@@ -70,6 +75,16 @@ export const RefundStatus: {
 
 export type RefundStatus = (typeof RefundStatus)[keyof typeof RefundStatus]
 
+
+export const EmailJobStatus: {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  SENT: 'SENT',
+  FAILED: 'FAILED'
+};
+
+export type EmailJobStatus = (typeof EmailJobStatus)[keyof typeof EmailJobStatus]
+
 }
 
 export type UserRole = $Enums.UserRole
@@ -87,6 +102,10 @@ export const PaymentStatus: typeof $Enums.PaymentStatus
 export type RefundStatus = $Enums.RefundStatus
 
 export const RefundStatus: typeof $Enums.RefundStatus
+
+export type EmailJobStatus = $Enums.EmailJobStatus
+
+export const EmailJobStatus: typeof $Enums.EmailJobStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -238,6 +257,16 @@ export class PrismaClient<
     * ```
     */
   get booking(): Prisma.BookingDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.emailJob`: Exposes CRUD operations for the **EmailJob** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EmailJobs
+    * const emailJobs = await prisma.emailJob.findMany()
+    * ```
+    */
+  get emailJob(): Prisma.EmailJobDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -687,7 +716,8 @@ export namespace Prisma {
   export const ModelName: {
     User: 'User',
     ParkingSpace: 'ParkingSpace',
-    Booking: 'Booking'
+    Booking: 'Booking',
+    EmailJob: 'EmailJob'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -703,7 +733,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "parkingSpace" | "booking"
+      modelProps: "user" | "parkingSpace" | "booking" | "emailJob"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -929,6 +959,80 @@ export namespace Prisma {
           }
         }
       }
+      EmailJob: {
+        payload: Prisma.$EmailJobPayload<ExtArgs>
+        fields: Prisma.EmailJobFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EmailJobFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailJobPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EmailJobFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailJobPayload>
+          }
+          findFirst: {
+            args: Prisma.EmailJobFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailJobPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EmailJobFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailJobPayload>
+          }
+          findMany: {
+            args: Prisma.EmailJobFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailJobPayload>[]
+          }
+          create: {
+            args: Prisma.EmailJobCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailJobPayload>
+          }
+          createMany: {
+            args: Prisma.EmailJobCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EmailJobCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailJobPayload>[]
+          }
+          delete: {
+            args: Prisma.EmailJobDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailJobPayload>
+          }
+          update: {
+            args: Prisma.EmailJobUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailJobPayload>
+          }
+          deleteMany: {
+            args: Prisma.EmailJobDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EmailJobUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EmailJobUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailJobPayload>[]
+          }
+          upsert: {
+            args: Prisma.EmailJobUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmailJobPayload>
+          }
+          aggregate: {
+            args: Prisma.EmailJobAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEmailJob>
+          }
+          groupBy: {
+            args: Prisma.EmailJobGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EmailJobGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EmailJobCountArgs<ExtArgs>
+            result: $Utils.Optional<EmailJobCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1055,6 +1159,7 @@ export namespace Prisma {
     user?: UserOmit
     parkingSpace?: ParkingSpaceOmit
     booking?: BookingOmit
+    emailJob?: EmailJobOmit
   }
 
   /* Types for Logging */
@@ -1198,6 +1303,37 @@ export namespace Prisma {
    */
   export type ParkingSpaceCountOutputTypeCountBookingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: BookingWhereInput
+  }
+
+
+  /**
+   * Count Type BookingCountOutputType
+   */
+
+  export type BookingCountOutputType = {
+    emailJobs: number
+  }
+
+  export type BookingCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    emailJobs?: boolean | BookingCountOutputTypeCountEmailJobsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * BookingCountOutputType without action
+   */
+  export type BookingCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BookingCountOutputType
+     */
+    select?: BookingCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * BookingCountOutputType without action
+   */
+  export type BookingCountOutputTypeCountEmailJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmailJobWhereInput
   }
 
 
@@ -3967,6 +4103,8 @@ export namespace Prisma {
     refundProcessedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     parkingSpace?: boolean | ParkingSpaceDefaultArgs<ExtArgs>
+    emailJobs?: boolean | Booking$emailJobsArgs<ExtArgs>
+    _count?: boolean | BookingCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["booking"]>
 
   export type BookingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -4049,6 +4187,8 @@ export namespace Prisma {
   export type BookingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     parkingSpace?: boolean | ParkingSpaceDefaultArgs<ExtArgs>
+    emailJobs?: boolean | Booking$emailJobsArgs<ExtArgs>
+    _count?: boolean | BookingCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type BookingIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -4064,6 +4204,7 @@ export namespace Prisma {
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
       parkingSpace: Prisma.$ParkingSpacePayload<ExtArgs>
+      emailJobs: Prisma.$EmailJobPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -4483,6 +4624,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     parkingSpace<T extends ParkingSpaceDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ParkingSpaceDefaultArgs<ExtArgs>>): Prisma__ParkingSpaceClient<$Result.GetResult<Prisma.$ParkingSpacePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    emailJobs<T extends Booking$emailJobsArgs<ExtArgs> = {}>(args?: Subset<T, Booking$emailJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4934,6 +5076,30 @@ export namespace Prisma {
   }
 
   /**
+   * Booking.emailJobs
+   */
+  export type Booking$emailJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailJob
+     */
+    select?: EmailJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailJob
+     */
+    omit?: EmailJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailJobInclude<ExtArgs> | null
+    where?: EmailJobWhereInput
+    orderBy?: EmailJobOrderByWithRelationInput | EmailJobOrderByWithRelationInput[]
+    cursor?: EmailJobWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EmailJobScalarFieldEnum | EmailJobScalarFieldEnum[]
+  }
+
+  /**
    * Booking without action
    */
   export type BookingDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4949,6 +5115,1247 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: BookingInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model EmailJob
+   */
+
+  export type AggregateEmailJob = {
+    _count: EmailJobCountAggregateOutputType | null
+    _avg: EmailJobAvgAggregateOutputType | null
+    _sum: EmailJobSumAggregateOutputType | null
+    _min: EmailJobMinAggregateOutputType | null
+    _max: EmailJobMaxAggregateOutputType | null
+  }
+
+  export type EmailJobAvgAggregateOutputType = {
+    id: number | null
+    bookingId: number | null
+    attempts: number | null
+  }
+
+  export type EmailJobSumAggregateOutputType = {
+    id: number | null
+    bookingId: number | null
+    attempts: number | null
+  }
+
+  export type EmailJobMinAggregateOutputType = {
+    id: number | null
+    bookingId: number | null
+    recipient: string | null
+    subject: string | null
+    html: string | null
+    status: $Enums.EmailJobStatus | null
+    attempts: number | null
+    nextRetryAt: Date | null
+    lockedAt: Date | null
+    lastError: string | null
+    sentAt: Date | null
+    dedupeKey: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EmailJobMaxAggregateOutputType = {
+    id: number | null
+    bookingId: number | null
+    recipient: string | null
+    subject: string | null
+    html: string | null
+    status: $Enums.EmailJobStatus | null
+    attempts: number | null
+    nextRetryAt: Date | null
+    lockedAt: Date | null
+    lastError: string | null
+    sentAt: Date | null
+    dedupeKey: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EmailJobCountAggregateOutputType = {
+    id: number
+    bookingId: number
+    recipient: number
+    subject: number
+    html: number
+    status: number
+    attempts: number
+    nextRetryAt: number
+    lockedAt: number
+    lastError: number
+    sentAt: number
+    dedupeKey: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EmailJobAvgAggregateInputType = {
+    id?: true
+    bookingId?: true
+    attempts?: true
+  }
+
+  export type EmailJobSumAggregateInputType = {
+    id?: true
+    bookingId?: true
+    attempts?: true
+  }
+
+  export type EmailJobMinAggregateInputType = {
+    id?: true
+    bookingId?: true
+    recipient?: true
+    subject?: true
+    html?: true
+    status?: true
+    attempts?: true
+    nextRetryAt?: true
+    lockedAt?: true
+    lastError?: true
+    sentAt?: true
+    dedupeKey?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EmailJobMaxAggregateInputType = {
+    id?: true
+    bookingId?: true
+    recipient?: true
+    subject?: true
+    html?: true
+    status?: true
+    attempts?: true
+    nextRetryAt?: true
+    lockedAt?: true
+    lastError?: true
+    sentAt?: true
+    dedupeKey?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EmailJobCountAggregateInputType = {
+    id?: true
+    bookingId?: true
+    recipient?: true
+    subject?: true
+    html?: true
+    status?: true
+    attempts?: true
+    nextRetryAt?: true
+    lockedAt?: true
+    lastError?: true
+    sentAt?: true
+    dedupeKey?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EmailJobAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmailJob to aggregate.
+     */
+    where?: EmailJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailJobs to fetch.
+     */
+    orderBy?: EmailJobOrderByWithRelationInput | EmailJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EmailJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EmailJobs
+    **/
+    _count?: true | EmailJobCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: EmailJobAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: EmailJobSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EmailJobMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EmailJobMaxAggregateInputType
+  }
+
+  export type GetEmailJobAggregateType<T extends EmailJobAggregateArgs> = {
+        [P in keyof T & keyof AggregateEmailJob]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEmailJob[P]>
+      : GetScalarType<T[P], AggregateEmailJob[P]>
+  }
+
+
+
+
+  export type EmailJobGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmailJobWhereInput
+    orderBy?: EmailJobOrderByWithAggregationInput | EmailJobOrderByWithAggregationInput[]
+    by: EmailJobScalarFieldEnum[] | EmailJobScalarFieldEnum
+    having?: EmailJobScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EmailJobCountAggregateInputType | true
+    _avg?: EmailJobAvgAggregateInputType
+    _sum?: EmailJobSumAggregateInputType
+    _min?: EmailJobMinAggregateInputType
+    _max?: EmailJobMaxAggregateInputType
+  }
+
+  export type EmailJobGroupByOutputType = {
+    id: number
+    bookingId: number | null
+    recipient: string
+    subject: string
+    html: string
+    status: $Enums.EmailJobStatus
+    attempts: number
+    nextRetryAt: Date
+    lockedAt: Date | null
+    lastError: string | null
+    sentAt: Date | null
+    dedupeKey: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: EmailJobCountAggregateOutputType | null
+    _avg: EmailJobAvgAggregateOutputType | null
+    _sum: EmailJobSumAggregateOutputType | null
+    _min: EmailJobMinAggregateOutputType | null
+    _max: EmailJobMaxAggregateOutputType | null
+  }
+
+  type GetEmailJobGroupByPayload<T extends EmailJobGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EmailJobGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EmailJobGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EmailJobGroupByOutputType[P]>
+            : GetScalarType<T[P], EmailJobGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EmailJobSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    bookingId?: boolean
+    recipient?: boolean
+    subject?: boolean
+    html?: boolean
+    status?: boolean
+    attempts?: boolean
+    nextRetryAt?: boolean
+    lockedAt?: boolean
+    lastError?: boolean
+    sentAt?: boolean
+    dedupeKey?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    booking?: boolean | EmailJob$bookingArgs<ExtArgs>
+  }, ExtArgs["result"]["emailJob"]>
+
+  export type EmailJobSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    bookingId?: boolean
+    recipient?: boolean
+    subject?: boolean
+    html?: boolean
+    status?: boolean
+    attempts?: boolean
+    nextRetryAt?: boolean
+    lockedAt?: boolean
+    lastError?: boolean
+    sentAt?: boolean
+    dedupeKey?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    booking?: boolean | EmailJob$bookingArgs<ExtArgs>
+  }, ExtArgs["result"]["emailJob"]>
+
+  export type EmailJobSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    bookingId?: boolean
+    recipient?: boolean
+    subject?: boolean
+    html?: boolean
+    status?: boolean
+    attempts?: boolean
+    nextRetryAt?: boolean
+    lockedAt?: boolean
+    lastError?: boolean
+    sentAt?: boolean
+    dedupeKey?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    booking?: boolean | EmailJob$bookingArgs<ExtArgs>
+  }, ExtArgs["result"]["emailJob"]>
+
+  export type EmailJobSelectScalar = {
+    id?: boolean
+    bookingId?: boolean
+    recipient?: boolean
+    subject?: boolean
+    html?: boolean
+    status?: boolean
+    attempts?: boolean
+    nextRetryAt?: boolean
+    lockedAt?: boolean
+    lastError?: boolean
+    sentAt?: boolean
+    dedupeKey?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EmailJobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bookingId" | "recipient" | "subject" | "html" | "status" | "attempts" | "nextRetryAt" | "lockedAt" | "lastError" | "sentAt" | "dedupeKey" | "createdAt" | "updatedAt", ExtArgs["result"]["emailJob"]>
+  export type EmailJobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    booking?: boolean | EmailJob$bookingArgs<ExtArgs>
+  }
+  export type EmailJobIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    booking?: boolean | EmailJob$bookingArgs<ExtArgs>
+  }
+  export type EmailJobIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    booking?: boolean | EmailJob$bookingArgs<ExtArgs>
+  }
+
+  export type $EmailJobPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EmailJob"
+    objects: {
+      booking: Prisma.$BookingPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      bookingId: number | null
+      recipient: string
+      subject: string
+      html: string
+      status: $Enums.EmailJobStatus
+      attempts: number
+      nextRetryAt: Date
+      lockedAt: Date | null
+      lastError: string | null
+      sentAt: Date | null
+      dedupeKey: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["emailJob"]>
+    composites: {}
+  }
+
+  type EmailJobGetPayload<S extends boolean | null | undefined | EmailJobDefaultArgs> = $Result.GetResult<Prisma.$EmailJobPayload, S>
+
+  type EmailJobCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EmailJobFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EmailJobCountAggregateInputType | true
+    }
+
+  export interface EmailJobDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EmailJob'], meta: { name: 'EmailJob' } }
+    /**
+     * Find zero or one EmailJob that matches the filter.
+     * @param {EmailJobFindUniqueArgs} args - Arguments to find a EmailJob
+     * @example
+     * // Get one EmailJob
+     * const emailJob = await prisma.emailJob.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EmailJobFindUniqueArgs>(args: SelectSubset<T, EmailJobFindUniqueArgs<ExtArgs>>): Prisma__EmailJobClient<$Result.GetResult<Prisma.$EmailJobPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EmailJob that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EmailJobFindUniqueOrThrowArgs} args - Arguments to find a EmailJob
+     * @example
+     * // Get one EmailJob
+     * const emailJob = await prisma.emailJob.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EmailJobFindUniqueOrThrowArgs>(args: SelectSubset<T, EmailJobFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EmailJobClient<$Result.GetResult<Prisma.$EmailJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmailJob that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailJobFindFirstArgs} args - Arguments to find a EmailJob
+     * @example
+     * // Get one EmailJob
+     * const emailJob = await prisma.emailJob.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EmailJobFindFirstArgs>(args?: SelectSubset<T, EmailJobFindFirstArgs<ExtArgs>>): Prisma__EmailJobClient<$Result.GetResult<Prisma.$EmailJobPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmailJob that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailJobFindFirstOrThrowArgs} args - Arguments to find a EmailJob
+     * @example
+     * // Get one EmailJob
+     * const emailJob = await prisma.emailJob.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EmailJobFindFirstOrThrowArgs>(args?: SelectSubset<T, EmailJobFindFirstOrThrowArgs<ExtArgs>>): Prisma__EmailJobClient<$Result.GetResult<Prisma.$EmailJobPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EmailJobs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailJobFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EmailJobs
+     * const emailJobs = await prisma.emailJob.findMany()
+     * 
+     * // Get first 10 EmailJobs
+     * const emailJobs = await prisma.emailJob.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const emailJobWithIdOnly = await prisma.emailJob.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EmailJobFindManyArgs>(args?: SelectSubset<T, EmailJobFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EmailJob.
+     * @param {EmailJobCreateArgs} args - Arguments to create a EmailJob.
+     * @example
+     * // Create one EmailJob
+     * const EmailJob = await prisma.emailJob.create({
+     *   data: {
+     *     // ... data to create a EmailJob
+     *   }
+     * })
+     * 
+     */
+    create<T extends EmailJobCreateArgs>(args: SelectSubset<T, EmailJobCreateArgs<ExtArgs>>): Prisma__EmailJobClient<$Result.GetResult<Prisma.$EmailJobPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EmailJobs.
+     * @param {EmailJobCreateManyArgs} args - Arguments to create many EmailJobs.
+     * @example
+     * // Create many EmailJobs
+     * const emailJob = await prisma.emailJob.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EmailJobCreateManyArgs>(args?: SelectSubset<T, EmailJobCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EmailJobs and returns the data saved in the database.
+     * @param {EmailJobCreateManyAndReturnArgs} args - Arguments to create many EmailJobs.
+     * @example
+     * // Create many EmailJobs
+     * const emailJob = await prisma.emailJob.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EmailJobs and only return the `id`
+     * const emailJobWithIdOnly = await prisma.emailJob.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EmailJobCreateManyAndReturnArgs>(args?: SelectSubset<T, EmailJobCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailJobPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a EmailJob.
+     * @param {EmailJobDeleteArgs} args - Arguments to delete one EmailJob.
+     * @example
+     * // Delete one EmailJob
+     * const EmailJob = await prisma.emailJob.delete({
+     *   where: {
+     *     // ... filter to delete one EmailJob
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EmailJobDeleteArgs>(args: SelectSubset<T, EmailJobDeleteArgs<ExtArgs>>): Prisma__EmailJobClient<$Result.GetResult<Prisma.$EmailJobPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EmailJob.
+     * @param {EmailJobUpdateArgs} args - Arguments to update one EmailJob.
+     * @example
+     * // Update one EmailJob
+     * const emailJob = await prisma.emailJob.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EmailJobUpdateArgs>(args: SelectSubset<T, EmailJobUpdateArgs<ExtArgs>>): Prisma__EmailJobClient<$Result.GetResult<Prisma.$EmailJobPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EmailJobs.
+     * @param {EmailJobDeleteManyArgs} args - Arguments to filter EmailJobs to delete.
+     * @example
+     * // Delete a few EmailJobs
+     * const { count } = await prisma.emailJob.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EmailJobDeleteManyArgs>(args?: SelectSubset<T, EmailJobDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmailJobs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailJobUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EmailJobs
+     * const emailJob = await prisma.emailJob.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EmailJobUpdateManyArgs>(args: SelectSubset<T, EmailJobUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmailJobs and returns the data updated in the database.
+     * @param {EmailJobUpdateManyAndReturnArgs} args - Arguments to update many EmailJobs.
+     * @example
+     * // Update many EmailJobs
+     * const emailJob = await prisma.emailJob.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more EmailJobs and only return the `id`
+     * const emailJobWithIdOnly = await prisma.emailJob.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EmailJobUpdateManyAndReturnArgs>(args: SelectSubset<T, EmailJobUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmailJobPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one EmailJob.
+     * @param {EmailJobUpsertArgs} args - Arguments to update or create a EmailJob.
+     * @example
+     * // Update or create a EmailJob
+     * const emailJob = await prisma.emailJob.upsert({
+     *   create: {
+     *     // ... data to create a EmailJob
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EmailJob we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EmailJobUpsertArgs>(args: SelectSubset<T, EmailJobUpsertArgs<ExtArgs>>): Prisma__EmailJobClient<$Result.GetResult<Prisma.$EmailJobPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EmailJobs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailJobCountArgs} args - Arguments to filter EmailJobs to count.
+     * @example
+     * // Count the number of EmailJobs
+     * const count = await prisma.emailJob.count({
+     *   where: {
+     *     // ... the filter for the EmailJobs we want to count
+     *   }
+     * })
+    **/
+    count<T extends EmailJobCountArgs>(
+      args?: Subset<T, EmailJobCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EmailJobCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EmailJob.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailJobAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EmailJobAggregateArgs>(args: Subset<T, EmailJobAggregateArgs>): Prisma.PrismaPromise<GetEmailJobAggregateType<T>>
+
+    /**
+     * Group by EmailJob.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmailJobGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EmailJobGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EmailJobGroupByArgs['orderBy'] }
+        : { orderBy?: EmailJobGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EmailJobGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEmailJobGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EmailJob model
+   */
+  readonly fields: EmailJobFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EmailJob.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EmailJobClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    booking<T extends EmailJob$bookingArgs<ExtArgs> = {}>(args?: Subset<T, EmailJob$bookingArgs<ExtArgs>>): Prisma__BookingClient<$Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EmailJob model
+   */
+  interface EmailJobFieldRefs {
+    readonly id: FieldRef<"EmailJob", 'Int'>
+    readonly bookingId: FieldRef<"EmailJob", 'Int'>
+    readonly recipient: FieldRef<"EmailJob", 'String'>
+    readonly subject: FieldRef<"EmailJob", 'String'>
+    readonly html: FieldRef<"EmailJob", 'String'>
+    readonly status: FieldRef<"EmailJob", 'EmailJobStatus'>
+    readonly attempts: FieldRef<"EmailJob", 'Int'>
+    readonly nextRetryAt: FieldRef<"EmailJob", 'DateTime'>
+    readonly lockedAt: FieldRef<"EmailJob", 'DateTime'>
+    readonly lastError: FieldRef<"EmailJob", 'String'>
+    readonly sentAt: FieldRef<"EmailJob", 'DateTime'>
+    readonly dedupeKey: FieldRef<"EmailJob", 'String'>
+    readonly createdAt: FieldRef<"EmailJob", 'DateTime'>
+    readonly updatedAt: FieldRef<"EmailJob", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EmailJob findUnique
+   */
+  export type EmailJobFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailJob
+     */
+    select?: EmailJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailJob
+     */
+    omit?: EmailJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailJobInclude<ExtArgs> | null
+    /**
+     * Filter, which EmailJob to fetch.
+     */
+    where: EmailJobWhereUniqueInput
+  }
+
+  /**
+   * EmailJob findUniqueOrThrow
+   */
+  export type EmailJobFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailJob
+     */
+    select?: EmailJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailJob
+     */
+    omit?: EmailJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailJobInclude<ExtArgs> | null
+    /**
+     * Filter, which EmailJob to fetch.
+     */
+    where: EmailJobWhereUniqueInput
+  }
+
+  /**
+   * EmailJob findFirst
+   */
+  export type EmailJobFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailJob
+     */
+    select?: EmailJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailJob
+     */
+    omit?: EmailJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailJobInclude<ExtArgs> | null
+    /**
+     * Filter, which EmailJob to fetch.
+     */
+    where?: EmailJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailJobs to fetch.
+     */
+    orderBy?: EmailJobOrderByWithRelationInput | EmailJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmailJobs.
+     */
+    cursor?: EmailJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmailJobs.
+     */
+    distinct?: EmailJobScalarFieldEnum | EmailJobScalarFieldEnum[]
+  }
+
+  /**
+   * EmailJob findFirstOrThrow
+   */
+  export type EmailJobFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailJob
+     */
+    select?: EmailJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailJob
+     */
+    omit?: EmailJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailJobInclude<ExtArgs> | null
+    /**
+     * Filter, which EmailJob to fetch.
+     */
+    where?: EmailJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailJobs to fetch.
+     */
+    orderBy?: EmailJobOrderByWithRelationInput | EmailJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmailJobs.
+     */
+    cursor?: EmailJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmailJobs.
+     */
+    distinct?: EmailJobScalarFieldEnum | EmailJobScalarFieldEnum[]
+  }
+
+  /**
+   * EmailJob findMany
+   */
+  export type EmailJobFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailJob
+     */
+    select?: EmailJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailJob
+     */
+    omit?: EmailJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailJobInclude<ExtArgs> | null
+    /**
+     * Filter, which EmailJobs to fetch.
+     */
+    where?: EmailJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmailJobs to fetch.
+     */
+    orderBy?: EmailJobOrderByWithRelationInput | EmailJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EmailJobs.
+     */
+    cursor?: EmailJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmailJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmailJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmailJobs.
+     */
+    distinct?: EmailJobScalarFieldEnum | EmailJobScalarFieldEnum[]
+  }
+
+  /**
+   * EmailJob create
+   */
+  export type EmailJobCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailJob
+     */
+    select?: EmailJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailJob
+     */
+    omit?: EmailJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailJobInclude<ExtArgs> | null
+    /**
+     * The data needed to create a EmailJob.
+     */
+    data: XOR<EmailJobCreateInput, EmailJobUncheckedCreateInput>
+  }
+
+  /**
+   * EmailJob createMany
+   */
+  export type EmailJobCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EmailJobs.
+     */
+    data: EmailJobCreateManyInput | EmailJobCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EmailJob createManyAndReturn
+   */
+  export type EmailJobCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailJob
+     */
+    select?: EmailJobSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailJob
+     */
+    omit?: EmailJobOmit<ExtArgs> | null
+    /**
+     * The data used to create many EmailJobs.
+     */
+    data: EmailJobCreateManyInput | EmailJobCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailJobIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EmailJob update
+   */
+  export type EmailJobUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailJob
+     */
+    select?: EmailJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailJob
+     */
+    omit?: EmailJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailJobInclude<ExtArgs> | null
+    /**
+     * The data needed to update a EmailJob.
+     */
+    data: XOR<EmailJobUpdateInput, EmailJobUncheckedUpdateInput>
+    /**
+     * Choose, which EmailJob to update.
+     */
+    where: EmailJobWhereUniqueInput
+  }
+
+  /**
+   * EmailJob updateMany
+   */
+  export type EmailJobUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EmailJobs.
+     */
+    data: XOR<EmailJobUpdateManyMutationInput, EmailJobUncheckedUpdateManyInput>
+    /**
+     * Filter which EmailJobs to update
+     */
+    where?: EmailJobWhereInput
+    /**
+     * Limit how many EmailJobs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmailJob updateManyAndReturn
+   */
+  export type EmailJobUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailJob
+     */
+    select?: EmailJobSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailJob
+     */
+    omit?: EmailJobOmit<ExtArgs> | null
+    /**
+     * The data used to update EmailJobs.
+     */
+    data: XOR<EmailJobUpdateManyMutationInput, EmailJobUncheckedUpdateManyInput>
+    /**
+     * Filter which EmailJobs to update
+     */
+    where?: EmailJobWhereInput
+    /**
+     * Limit how many EmailJobs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailJobIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * EmailJob upsert
+   */
+  export type EmailJobUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailJob
+     */
+    select?: EmailJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailJob
+     */
+    omit?: EmailJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailJobInclude<ExtArgs> | null
+    /**
+     * The filter to search for the EmailJob to update in case it exists.
+     */
+    where: EmailJobWhereUniqueInput
+    /**
+     * In case the EmailJob found by the `where` argument doesn't exist, create a new EmailJob with this data.
+     */
+    create: XOR<EmailJobCreateInput, EmailJobUncheckedCreateInput>
+    /**
+     * In case the EmailJob was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EmailJobUpdateInput, EmailJobUncheckedUpdateInput>
+  }
+
+  /**
+   * EmailJob delete
+   */
+  export type EmailJobDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailJob
+     */
+    select?: EmailJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailJob
+     */
+    omit?: EmailJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailJobInclude<ExtArgs> | null
+    /**
+     * Filter which EmailJob to delete.
+     */
+    where: EmailJobWhereUniqueInput
+  }
+
+  /**
+   * EmailJob deleteMany
+   */
+  export type EmailJobDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmailJobs to delete
+     */
+    where?: EmailJobWhereInput
+    /**
+     * Limit how many EmailJobs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmailJob.booking
+   */
+  export type EmailJob$bookingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Booking
+     */
+    select?: BookingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Booking
+     */
+    omit?: BookingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BookingInclude<ExtArgs> | null
+    where?: BookingWhereInput
+  }
+
+  /**
+   * EmailJob without action
+   */
+  export type EmailJobDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmailJob
+     */
+    select?: EmailJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmailJob
+     */
+    omit?: EmailJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EmailJobInclude<ExtArgs> | null
   }
 
 
@@ -5023,6 +6430,26 @@ export namespace Prisma {
   };
 
   export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
+
+
+  export const EmailJobScalarFieldEnum: {
+    id: 'id',
+    bookingId: 'bookingId',
+    recipient: 'recipient',
+    subject: 'subject',
+    html: 'html',
+    status: 'status',
+    attempts: 'attempts',
+    nextRetryAt: 'nextRetryAt',
+    lockedAt: 'lockedAt',
+    lastError: 'lastError',
+    sentAt: 'sentAt',
+    dedupeKey: 'dedupeKey',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EmailJobScalarFieldEnum = (typeof EmailJobScalarFieldEnum)[keyof typeof EmailJobScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -5170,6 +6597,20 @@ export namespace Prisma {
    * Reference to a field of type 'RefundStatus[]'
    */
   export type ListEnumRefundStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RefundStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'EmailJobStatus'
+   */
+  export type EnumEmailJobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmailJobStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'EmailJobStatus[]'
+   */
+  export type ListEnumEmailJobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmailJobStatus[]'>
     
   /**
    * Deep Input Types
@@ -5373,6 +6814,7 @@ export namespace Prisma {
     refundProcessedAt?: DateTimeNullableFilter<"Booking"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     parkingSpace?: XOR<ParkingSpaceScalarRelationFilter, ParkingSpaceWhereInput>
+    emailJobs?: EmailJobListRelationFilter
   }
 
   export type BookingOrderByWithRelationInput = {
@@ -5399,6 +6841,7 @@ export namespace Prisma {
     refundProcessedAt?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     parkingSpace?: ParkingSpaceOrderByWithRelationInput
+    emailJobs?: EmailJobOrderByRelationAggregateInput
   }
 
   export type BookingWhereUniqueInput = Prisma.AtLeast<{
@@ -5428,6 +6871,7 @@ export namespace Prisma {
     refundProcessedAt?: DateTimeNullableFilter<"Booking"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     parkingSpace?: XOR<ParkingSpaceScalarRelationFilter, ParkingSpaceWhereInput>
+    emailJobs?: EmailJobListRelationFilter
   }, "id" | "razorpayOrderId" | "razorpayPaymentId" | "razorpayRefundId">
 
   export type BookingOrderByWithAggregationInput = {
@@ -5484,6 +6928,108 @@ export namespace Prisma {
     refundStatus?: EnumRefundStatusNullableWithAggregatesFilter<"Booking"> | $Enums.RefundStatus | null
     refundAmountPaise?: IntNullableWithAggregatesFilter<"Booking"> | number | null
     refundProcessedAt?: DateTimeNullableWithAggregatesFilter<"Booking"> | Date | string | null
+  }
+
+  export type EmailJobWhereInput = {
+    AND?: EmailJobWhereInput | EmailJobWhereInput[]
+    OR?: EmailJobWhereInput[]
+    NOT?: EmailJobWhereInput | EmailJobWhereInput[]
+    id?: IntFilter<"EmailJob"> | number
+    bookingId?: IntNullableFilter<"EmailJob"> | number | null
+    recipient?: StringFilter<"EmailJob"> | string
+    subject?: StringFilter<"EmailJob"> | string
+    html?: StringFilter<"EmailJob"> | string
+    status?: EnumEmailJobStatusFilter<"EmailJob"> | $Enums.EmailJobStatus
+    attempts?: IntFilter<"EmailJob"> | number
+    nextRetryAt?: DateTimeFilter<"EmailJob"> | Date | string
+    lockedAt?: DateTimeNullableFilter<"EmailJob"> | Date | string | null
+    lastError?: StringNullableFilter<"EmailJob"> | string | null
+    sentAt?: DateTimeNullableFilter<"EmailJob"> | Date | string | null
+    dedupeKey?: StringNullableFilter<"EmailJob"> | string | null
+    createdAt?: DateTimeFilter<"EmailJob"> | Date | string
+    updatedAt?: DateTimeFilter<"EmailJob"> | Date | string
+    booking?: XOR<BookingNullableScalarRelationFilter, BookingWhereInput> | null
+  }
+
+  export type EmailJobOrderByWithRelationInput = {
+    id?: SortOrder
+    bookingId?: SortOrderInput | SortOrder
+    recipient?: SortOrder
+    subject?: SortOrder
+    html?: SortOrder
+    status?: SortOrder
+    attempts?: SortOrder
+    nextRetryAt?: SortOrder
+    lockedAt?: SortOrderInput | SortOrder
+    lastError?: SortOrderInput | SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    dedupeKey?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    booking?: BookingOrderByWithRelationInput
+  }
+
+  export type EmailJobWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    dedupeKey?: string
+    AND?: EmailJobWhereInput | EmailJobWhereInput[]
+    OR?: EmailJobWhereInput[]
+    NOT?: EmailJobWhereInput | EmailJobWhereInput[]
+    bookingId?: IntNullableFilter<"EmailJob"> | number | null
+    recipient?: StringFilter<"EmailJob"> | string
+    subject?: StringFilter<"EmailJob"> | string
+    html?: StringFilter<"EmailJob"> | string
+    status?: EnumEmailJobStatusFilter<"EmailJob"> | $Enums.EmailJobStatus
+    attempts?: IntFilter<"EmailJob"> | number
+    nextRetryAt?: DateTimeFilter<"EmailJob"> | Date | string
+    lockedAt?: DateTimeNullableFilter<"EmailJob"> | Date | string | null
+    lastError?: StringNullableFilter<"EmailJob"> | string | null
+    sentAt?: DateTimeNullableFilter<"EmailJob"> | Date | string | null
+    createdAt?: DateTimeFilter<"EmailJob"> | Date | string
+    updatedAt?: DateTimeFilter<"EmailJob"> | Date | string
+    booking?: XOR<BookingNullableScalarRelationFilter, BookingWhereInput> | null
+  }, "id" | "dedupeKey">
+
+  export type EmailJobOrderByWithAggregationInput = {
+    id?: SortOrder
+    bookingId?: SortOrderInput | SortOrder
+    recipient?: SortOrder
+    subject?: SortOrder
+    html?: SortOrder
+    status?: SortOrder
+    attempts?: SortOrder
+    nextRetryAt?: SortOrder
+    lockedAt?: SortOrderInput | SortOrder
+    lastError?: SortOrderInput | SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    dedupeKey?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EmailJobCountOrderByAggregateInput
+    _avg?: EmailJobAvgOrderByAggregateInput
+    _max?: EmailJobMaxOrderByAggregateInput
+    _min?: EmailJobMinOrderByAggregateInput
+    _sum?: EmailJobSumOrderByAggregateInput
+  }
+
+  export type EmailJobScalarWhereWithAggregatesInput = {
+    AND?: EmailJobScalarWhereWithAggregatesInput | EmailJobScalarWhereWithAggregatesInput[]
+    OR?: EmailJobScalarWhereWithAggregatesInput[]
+    NOT?: EmailJobScalarWhereWithAggregatesInput | EmailJobScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"EmailJob"> | number
+    bookingId?: IntNullableWithAggregatesFilter<"EmailJob"> | number | null
+    recipient?: StringWithAggregatesFilter<"EmailJob"> | string
+    subject?: StringWithAggregatesFilter<"EmailJob"> | string
+    html?: StringWithAggregatesFilter<"EmailJob"> | string
+    status?: EnumEmailJobStatusWithAggregatesFilter<"EmailJob"> | $Enums.EmailJobStatus
+    attempts?: IntWithAggregatesFilter<"EmailJob"> | number
+    nextRetryAt?: DateTimeWithAggregatesFilter<"EmailJob"> | Date | string
+    lockedAt?: DateTimeNullableWithAggregatesFilter<"EmailJob"> | Date | string | null
+    lastError?: StringNullableWithAggregatesFilter<"EmailJob"> | string | null
+    sentAt?: DateTimeNullableWithAggregatesFilter<"EmailJob"> | Date | string | null
+    dedupeKey?: StringNullableWithAggregatesFilter<"EmailJob"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"EmailJob"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"EmailJob"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -5694,6 +7240,7 @@ export namespace Prisma {
     refundProcessedAt?: Date | string | null
     user: UserCreateNestedOneWithoutBookingsInput
     parkingSpace: ParkingSpaceCreateNestedOneWithoutBookingsInput
+    emailJobs?: EmailJobCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUncheckedCreateInput = {
@@ -5718,6 +7265,7 @@ export namespace Prisma {
     refundStatus?: $Enums.RefundStatus | null
     refundAmountPaise?: number | null
     refundProcessedAt?: Date | string | null
+    emailJobs?: EmailJobUncheckedCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUpdateInput = {
@@ -5741,6 +7289,7 @@ export namespace Prisma {
     refundProcessedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutBookingsNestedInput
     parkingSpace?: ParkingSpaceUpdateOneRequiredWithoutBookingsNestedInput
+    emailJobs?: EmailJobUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateInput = {
@@ -5765,6 +7314,7 @@ export namespace Prisma {
     refundStatus?: NullableEnumRefundStatusFieldUpdateOperationsInput | $Enums.RefundStatus | null
     refundAmountPaise?: NullableIntFieldUpdateOperationsInput | number | null
     refundProcessedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailJobs?: EmailJobUncheckedUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingCreateManyInput = {
@@ -5834,6 +7384,121 @@ export namespace Prisma {
     refundStatus?: NullableEnumRefundStatusFieldUpdateOperationsInput | $Enums.RefundStatus | null
     refundAmountPaise?: NullableIntFieldUpdateOperationsInput | number | null
     refundProcessedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type EmailJobCreateInput = {
+    recipient: string
+    subject: string
+    html: string
+    status?: $Enums.EmailJobStatus
+    attempts?: number
+    nextRetryAt?: Date | string
+    lockedAt?: Date | string | null
+    lastError?: string | null
+    sentAt?: Date | string | null
+    dedupeKey?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    booking?: BookingCreateNestedOneWithoutEmailJobsInput
+  }
+
+  export type EmailJobUncheckedCreateInput = {
+    id?: number
+    bookingId?: number | null
+    recipient: string
+    subject: string
+    html: string
+    status?: $Enums.EmailJobStatus
+    attempts?: number
+    nextRetryAt?: Date | string
+    lockedAt?: Date | string | null
+    lastError?: string | null
+    sentAt?: Date | string | null
+    dedupeKey?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmailJobUpdateInput = {
+    recipient?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    html?: StringFieldUpdateOperationsInput | string
+    status?: EnumEmailJobStatusFieldUpdateOperationsInput | $Enums.EmailJobStatus
+    attempts?: IntFieldUpdateOperationsInput | number
+    nextRetryAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    booking?: BookingUpdateOneWithoutEmailJobsNestedInput
+  }
+
+  export type EmailJobUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    bookingId?: NullableIntFieldUpdateOperationsInput | number | null
+    recipient?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    html?: StringFieldUpdateOperationsInput | string
+    status?: EnumEmailJobStatusFieldUpdateOperationsInput | $Enums.EmailJobStatus
+    attempts?: IntFieldUpdateOperationsInput | number
+    nextRetryAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailJobCreateManyInput = {
+    id?: number
+    bookingId?: number | null
+    recipient: string
+    subject: string
+    html: string
+    status?: $Enums.EmailJobStatus
+    attempts?: number
+    nextRetryAt?: Date | string
+    lockedAt?: Date | string | null
+    lastError?: string | null
+    sentAt?: Date | string | null
+    dedupeKey?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmailJobUpdateManyMutationInput = {
+    recipient?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    html?: StringFieldUpdateOperationsInput | string
+    status?: EnumEmailJobStatusFieldUpdateOperationsInput | $Enums.EmailJobStatus
+    attempts?: IntFieldUpdateOperationsInput | number
+    nextRetryAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailJobUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    bookingId?: NullableIntFieldUpdateOperationsInput | number | null
+    recipient?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    html?: StringFieldUpdateOperationsInput | string
+    status?: EnumEmailJobStatusFieldUpdateOperationsInput | $Enums.EmailJobStatus
+    attempts?: IntFieldUpdateOperationsInput | number
+    nextRetryAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -6218,6 +7883,16 @@ export namespace Prisma {
     isNot?: ParkingSpaceWhereInput
   }
 
+  export type EmailJobListRelationFilter = {
+    every?: EmailJobWhereInput
+    some?: EmailJobWhereInput
+    none?: EmailJobWhereInput
+  }
+
+  export type EmailJobOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type BookingCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -6368,6 +8043,91 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumRefundStatusNullableFilter<$PrismaModel>
     _max?: NestedEnumRefundStatusNullableFilter<$PrismaModel>
+  }
+
+  export type EnumEmailJobStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.EmailJobStatus | EnumEmailJobStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EmailJobStatus[] | ListEnumEmailJobStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EmailJobStatus[] | ListEnumEmailJobStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEmailJobStatusFilter<$PrismaModel> | $Enums.EmailJobStatus
+  }
+
+  export type BookingNullableScalarRelationFilter = {
+    is?: BookingWhereInput | null
+    isNot?: BookingWhereInput | null
+  }
+
+  export type EmailJobCountOrderByAggregateInput = {
+    id?: SortOrder
+    bookingId?: SortOrder
+    recipient?: SortOrder
+    subject?: SortOrder
+    html?: SortOrder
+    status?: SortOrder
+    attempts?: SortOrder
+    nextRetryAt?: SortOrder
+    lockedAt?: SortOrder
+    lastError?: SortOrder
+    sentAt?: SortOrder
+    dedupeKey?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmailJobAvgOrderByAggregateInput = {
+    id?: SortOrder
+    bookingId?: SortOrder
+    attempts?: SortOrder
+  }
+
+  export type EmailJobMaxOrderByAggregateInput = {
+    id?: SortOrder
+    bookingId?: SortOrder
+    recipient?: SortOrder
+    subject?: SortOrder
+    html?: SortOrder
+    status?: SortOrder
+    attempts?: SortOrder
+    nextRetryAt?: SortOrder
+    lockedAt?: SortOrder
+    lastError?: SortOrder
+    sentAt?: SortOrder
+    dedupeKey?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmailJobMinOrderByAggregateInput = {
+    id?: SortOrder
+    bookingId?: SortOrder
+    recipient?: SortOrder
+    subject?: SortOrder
+    html?: SortOrder
+    status?: SortOrder
+    attempts?: SortOrder
+    nextRetryAt?: SortOrder
+    lockedAt?: SortOrder
+    lastError?: SortOrder
+    sentAt?: SortOrder
+    dedupeKey?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmailJobSumOrderByAggregateInput = {
+    id?: SortOrder
+    bookingId?: SortOrder
+    attempts?: SortOrder
+  }
+
+  export type EnumEmailJobStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EmailJobStatus | EnumEmailJobStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EmailJobStatus[] | ListEnumEmailJobStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EmailJobStatus[] | ListEnumEmailJobStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEmailJobStatusWithAggregatesFilter<$PrismaModel> | $Enums.EmailJobStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEmailJobStatusFilter<$PrismaModel>
+    _max?: NestedEnumEmailJobStatusFilter<$PrismaModel>
   }
 
   export type ParkingSpaceCreateNestedManyWithoutOwnerInput = {
@@ -6566,6 +8326,20 @@ export namespace Prisma {
     connect?: ParkingSpaceWhereUniqueInput
   }
 
+  export type EmailJobCreateNestedManyWithoutBookingInput = {
+    create?: XOR<EmailJobCreateWithoutBookingInput, EmailJobUncheckedCreateWithoutBookingInput> | EmailJobCreateWithoutBookingInput[] | EmailJobUncheckedCreateWithoutBookingInput[]
+    connectOrCreate?: EmailJobCreateOrConnectWithoutBookingInput | EmailJobCreateOrConnectWithoutBookingInput[]
+    createMany?: EmailJobCreateManyBookingInputEnvelope
+    connect?: EmailJobWhereUniqueInput | EmailJobWhereUniqueInput[]
+  }
+
+  export type EmailJobUncheckedCreateNestedManyWithoutBookingInput = {
+    create?: XOR<EmailJobCreateWithoutBookingInput, EmailJobUncheckedCreateWithoutBookingInput> | EmailJobCreateWithoutBookingInput[] | EmailJobUncheckedCreateWithoutBookingInput[]
+    connectOrCreate?: EmailJobCreateOrConnectWithoutBookingInput | EmailJobCreateOrConnectWithoutBookingInput[]
+    createMany?: EmailJobCreateManyBookingInputEnvelope
+    connect?: EmailJobWhereUniqueInput | EmailJobWhereUniqueInput[]
+  }
+
   export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
   }
@@ -6604,6 +8378,54 @@ export namespace Prisma {
     upsert?: ParkingSpaceUpsertWithoutBookingsInput
     connect?: ParkingSpaceWhereUniqueInput
     update?: XOR<XOR<ParkingSpaceUpdateToOneWithWhereWithoutBookingsInput, ParkingSpaceUpdateWithoutBookingsInput>, ParkingSpaceUncheckedUpdateWithoutBookingsInput>
+  }
+
+  export type EmailJobUpdateManyWithoutBookingNestedInput = {
+    create?: XOR<EmailJobCreateWithoutBookingInput, EmailJobUncheckedCreateWithoutBookingInput> | EmailJobCreateWithoutBookingInput[] | EmailJobUncheckedCreateWithoutBookingInput[]
+    connectOrCreate?: EmailJobCreateOrConnectWithoutBookingInput | EmailJobCreateOrConnectWithoutBookingInput[]
+    upsert?: EmailJobUpsertWithWhereUniqueWithoutBookingInput | EmailJobUpsertWithWhereUniqueWithoutBookingInput[]
+    createMany?: EmailJobCreateManyBookingInputEnvelope
+    set?: EmailJobWhereUniqueInput | EmailJobWhereUniqueInput[]
+    disconnect?: EmailJobWhereUniqueInput | EmailJobWhereUniqueInput[]
+    delete?: EmailJobWhereUniqueInput | EmailJobWhereUniqueInput[]
+    connect?: EmailJobWhereUniqueInput | EmailJobWhereUniqueInput[]
+    update?: EmailJobUpdateWithWhereUniqueWithoutBookingInput | EmailJobUpdateWithWhereUniqueWithoutBookingInput[]
+    updateMany?: EmailJobUpdateManyWithWhereWithoutBookingInput | EmailJobUpdateManyWithWhereWithoutBookingInput[]
+    deleteMany?: EmailJobScalarWhereInput | EmailJobScalarWhereInput[]
+  }
+
+  export type EmailJobUncheckedUpdateManyWithoutBookingNestedInput = {
+    create?: XOR<EmailJobCreateWithoutBookingInput, EmailJobUncheckedCreateWithoutBookingInput> | EmailJobCreateWithoutBookingInput[] | EmailJobUncheckedCreateWithoutBookingInput[]
+    connectOrCreate?: EmailJobCreateOrConnectWithoutBookingInput | EmailJobCreateOrConnectWithoutBookingInput[]
+    upsert?: EmailJobUpsertWithWhereUniqueWithoutBookingInput | EmailJobUpsertWithWhereUniqueWithoutBookingInput[]
+    createMany?: EmailJobCreateManyBookingInputEnvelope
+    set?: EmailJobWhereUniqueInput | EmailJobWhereUniqueInput[]
+    disconnect?: EmailJobWhereUniqueInput | EmailJobWhereUniqueInput[]
+    delete?: EmailJobWhereUniqueInput | EmailJobWhereUniqueInput[]
+    connect?: EmailJobWhereUniqueInput | EmailJobWhereUniqueInput[]
+    update?: EmailJobUpdateWithWhereUniqueWithoutBookingInput | EmailJobUpdateWithWhereUniqueWithoutBookingInput[]
+    updateMany?: EmailJobUpdateManyWithWhereWithoutBookingInput | EmailJobUpdateManyWithWhereWithoutBookingInput[]
+    deleteMany?: EmailJobScalarWhereInput | EmailJobScalarWhereInput[]
+  }
+
+  export type BookingCreateNestedOneWithoutEmailJobsInput = {
+    create?: XOR<BookingCreateWithoutEmailJobsInput, BookingUncheckedCreateWithoutEmailJobsInput>
+    connectOrCreate?: BookingCreateOrConnectWithoutEmailJobsInput
+    connect?: BookingWhereUniqueInput
+  }
+
+  export type EnumEmailJobStatusFieldUpdateOperationsInput = {
+    set?: $Enums.EmailJobStatus
+  }
+
+  export type BookingUpdateOneWithoutEmailJobsNestedInput = {
+    create?: XOR<BookingCreateWithoutEmailJobsInput, BookingUncheckedCreateWithoutEmailJobsInput>
+    connectOrCreate?: BookingCreateOrConnectWithoutEmailJobsInput
+    upsert?: BookingUpsertWithoutEmailJobsInput
+    disconnect?: BookingWhereInput | boolean
+    delete?: BookingWhereInput | boolean
+    connect?: BookingWhereUniqueInput
+    update?: XOR<XOR<BookingUpdateToOneWithWhereWithoutEmailJobsInput, BookingUpdateWithoutEmailJobsInput>, BookingUncheckedUpdateWithoutEmailJobsInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -6907,6 +8729,23 @@ export namespace Prisma {
     _max?: NestedEnumRefundStatusNullableFilter<$PrismaModel>
   }
 
+  export type NestedEnumEmailJobStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.EmailJobStatus | EnumEmailJobStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EmailJobStatus[] | ListEnumEmailJobStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EmailJobStatus[] | ListEnumEmailJobStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEmailJobStatusFilter<$PrismaModel> | $Enums.EmailJobStatus
+  }
+
+  export type NestedEnumEmailJobStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EmailJobStatus | EnumEmailJobStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EmailJobStatus[] | ListEnumEmailJobStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EmailJobStatus[] | ListEnumEmailJobStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEmailJobStatusWithAggregatesFilter<$PrismaModel> | $Enums.EmailJobStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEmailJobStatusFilter<$PrismaModel>
+    _max?: NestedEnumEmailJobStatusFilter<$PrismaModel>
+  }
+
   export type ParkingSpaceCreateWithoutOwnerInput = {
     name: string
     address: string
@@ -6970,6 +8809,7 @@ export namespace Prisma {
     refundAmountPaise?: number | null
     refundProcessedAt?: Date | string | null
     parkingSpace: ParkingSpaceCreateNestedOneWithoutBookingsInput
+    emailJobs?: EmailJobCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUncheckedCreateWithoutUserInput = {
@@ -6993,6 +8833,7 @@ export namespace Prisma {
     refundStatus?: $Enums.RefundStatus | null
     refundAmountPaise?: number | null
     refundProcessedAt?: Date | string | null
+    emailJobs?: EmailJobUncheckedCreateNestedManyWithoutBookingInput
   }
 
   export type BookingCreateOrConnectWithoutUserInput = {
@@ -7128,6 +8969,7 @@ export namespace Prisma {
     refundAmountPaise?: number | null
     refundProcessedAt?: Date | string | null
     user: UserCreateNestedOneWithoutBookingsInput
+    emailJobs?: EmailJobCreateNestedManyWithoutBookingInput
   }
 
   export type BookingUncheckedCreateWithoutParkingSpaceInput = {
@@ -7151,6 +8993,7 @@ export namespace Prisma {
     refundStatus?: $Enums.RefundStatus | null
     refundAmountPaise?: number | null
     refundProcessedAt?: Date | string | null
+    emailJobs?: EmailJobUncheckedCreateNestedManyWithoutBookingInput
   }
 
   export type BookingCreateOrConnectWithoutParkingSpaceInput = {
@@ -7271,6 +9114,47 @@ export namespace Prisma {
     create: XOR<ParkingSpaceCreateWithoutBookingsInput, ParkingSpaceUncheckedCreateWithoutBookingsInput>
   }
 
+  export type EmailJobCreateWithoutBookingInput = {
+    recipient: string
+    subject: string
+    html: string
+    status?: $Enums.EmailJobStatus
+    attempts?: number
+    nextRetryAt?: Date | string
+    lockedAt?: Date | string | null
+    lastError?: string | null
+    sentAt?: Date | string | null
+    dedupeKey?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmailJobUncheckedCreateWithoutBookingInput = {
+    id?: number
+    recipient: string
+    subject: string
+    html: string
+    status?: $Enums.EmailJobStatus
+    attempts?: number
+    nextRetryAt?: Date | string
+    lockedAt?: Date | string | null
+    lastError?: string | null
+    sentAt?: Date | string | null
+    dedupeKey?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmailJobCreateOrConnectWithoutBookingInput = {
+    where: EmailJobWhereUniqueInput
+    create: XOR<EmailJobCreateWithoutBookingInput, EmailJobUncheckedCreateWithoutBookingInput>
+  }
+
+  export type EmailJobCreateManyBookingInputEnvelope = {
+    data: EmailJobCreateManyBookingInput | EmailJobCreateManyBookingInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutBookingsInput = {
     update: XOR<UserUpdateWithoutBookingsInput, UserUncheckedUpdateWithoutBookingsInput>
     create: XOR<UserCreateWithoutBookingsInput, UserUncheckedCreateWithoutBookingsInput>
@@ -7343,6 +9227,152 @@ export namespace Prisma {
     contactPhone?: NullableStringFieldUpdateOperationsInput | string | null
     ownerId?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailJobUpsertWithWhereUniqueWithoutBookingInput = {
+    where: EmailJobWhereUniqueInput
+    update: XOR<EmailJobUpdateWithoutBookingInput, EmailJobUncheckedUpdateWithoutBookingInput>
+    create: XOR<EmailJobCreateWithoutBookingInput, EmailJobUncheckedCreateWithoutBookingInput>
+  }
+
+  export type EmailJobUpdateWithWhereUniqueWithoutBookingInput = {
+    where: EmailJobWhereUniqueInput
+    data: XOR<EmailJobUpdateWithoutBookingInput, EmailJobUncheckedUpdateWithoutBookingInput>
+  }
+
+  export type EmailJobUpdateManyWithWhereWithoutBookingInput = {
+    where: EmailJobScalarWhereInput
+    data: XOR<EmailJobUpdateManyMutationInput, EmailJobUncheckedUpdateManyWithoutBookingInput>
+  }
+
+  export type EmailJobScalarWhereInput = {
+    AND?: EmailJobScalarWhereInput | EmailJobScalarWhereInput[]
+    OR?: EmailJobScalarWhereInput[]
+    NOT?: EmailJobScalarWhereInput | EmailJobScalarWhereInput[]
+    id?: IntFilter<"EmailJob"> | number
+    bookingId?: IntNullableFilter<"EmailJob"> | number | null
+    recipient?: StringFilter<"EmailJob"> | string
+    subject?: StringFilter<"EmailJob"> | string
+    html?: StringFilter<"EmailJob"> | string
+    status?: EnumEmailJobStatusFilter<"EmailJob"> | $Enums.EmailJobStatus
+    attempts?: IntFilter<"EmailJob"> | number
+    nextRetryAt?: DateTimeFilter<"EmailJob"> | Date | string
+    lockedAt?: DateTimeNullableFilter<"EmailJob"> | Date | string | null
+    lastError?: StringNullableFilter<"EmailJob"> | string | null
+    sentAt?: DateTimeNullableFilter<"EmailJob"> | Date | string | null
+    dedupeKey?: StringNullableFilter<"EmailJob"> | string | null
+    createdAt?: DateTimeFilter<"EmailJob"> | Date | string
+    updatedAt?: DateTimeFilter<"EmailJob"> | Date | string
+  }
+
+  export type BookingCreateWithoutEmailJobsInput = {
+    bookingDate: Date | string
+    startTime: string
+    durationHours: number
+    totalPrice: number
+    startAt?: Date | string | null
+    endAt?: Date | string | null
+    status?: $Enums.BookingStatus
+    paymentStatus?: $Enums.PaymentStatus
+    amountPaise?: number | null
+    razorpayOrderId?: string | null
+    razorpayPaymentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    expiresAt?: Date | string | null
+    razorpayRefundId?: string | null
+    refundStatus?: $Enums.RefundStatus | null
+    refundAmountPaise?: number | null
+    refundProcessedAt?: Date | string | null
+    user: UserCreateNestedOneWithoutBookingsInput
+    parkingSpace: ParkingSpaceCreateNestedOneWithoutBookingsInput
+  }
+
+  export type BookingUncheckedCreateWithoutEmailJobsInput = {
+    id?: number
+    userId: number
+    parkingSpaceId: number
+    bookingDate: Date | string
+    startTime: string
+    durationHours: number
+    totalPrice: number
+    startAt?: Date | string | null
+    endAt?: Date | string | null
+    status?: $Enums.BookingStatus
+    paymentStatus?: $Enums.PaymentStatus
+    amountPaise?: number | null
+    razorpayOrderId?: string | null
+    razorpayPaymentId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    expiresAt?: Date | string | null
+    razorpayRefundId?: string | null
+    refundStatus?: $Enums.RefundStatus | null
+    refundAmountPaise?: number | null
+    refundProcessedAt?: Date | string | null
+  }
+
+  export type BookingCreateOrConnectWithoutEmailJobsInput = {
+    where: BookingWhereUniqueInput
+    create: XOR<BookingCreateWithoutEmailJobsInput, BookingUncheckedCreateWithoutEmailJobsInput>
+  }
+
+  export type BookingUpsertWithoutEmailJobsInput = {
+    update: XOR<BookingUpdateWithoutEmailJobsInput, BookingUncheckedUpdateWithoutEmailJobsInput>
+    create: XOR<BookingCreateWithoutEmailJobsInput, BookingUncheckedCreateWithoutEmailJobsInput>
+    where?: BookingWhereInput
+  }
+
+  export type BookingUpdateToOneWithWhereWithoutEmailJobsInput = {
+    where?: BookingWhereInput
+    data: XOR<BookingUpdateWithoutEmailJobsInput, BookingUncheckedUpdateWithoutEmailJobsInput>
+  }
+
+  export type BookingUpdateWithoutEmailJobsInput = {
+    bookingDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    startTime?: StringFieldUpdateOperationsInput | string
+    durationHours?: IntFieldUpdateOperationsInput | number
+    totalPrice?: FloatFieldUpdateOperationsInput | number
+    startAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    amountPaise?: NullableIntFieldUpdateOperationsInput | number | null
+    razorpayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    razorpayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    refundStatus?: NullableEnumRefundStatusFieldUpdateOperationsInput | $Enums.RefundStatus | null
+    refundAmountPaise?: NullableIntFieldUpdateOperationsInput | number | null
+    refundProcessedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    user?: UserUpdateOneRequiredWithoutBookingsNestedInput
+    parkingSpace?: ParkingSpaceUpdateOneRequiredWithoutBookingsNestedInput
+  }
+
+  export type BookingUncheckedUpdateWithoutEmailJobsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: IntFieldUpdateOperationsInput | number
+    parkingSpaceId?: IntFieldUpdateOperationsInput | number
+    bookingDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    startTime?: StringFieldUpdateOperationsInput | string
+    durationHours?: IntFieldUpdateOperationsInput | number
+    totalPrice?: FloatFieldUpdateOperationsInput | number
+    startAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    amountPaise?: NullableIntFieldUpdateOperationsInput | number | null
+    razorpayOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    razorpayPaymentId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    razorpayRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    refundStatus?: NullableEnumRefundStatusFieldUpdateOperationsInput | $Enums.RefundStatus | null
+    refundAmountPaise?: NullableIntFieldUpdateOperationsInput | number | null
+    refundProcessedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ParkingSpaceCreateManyOwnerInput = {
@@ -7453,6 +9483,7 @@ export namespace Prisma {
     refundAmountPaise?: NullableIntFieldUpdateOperationsInput | number | null
     refundProcessedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     parkingSpace?: ParkingSpaceUpdateOneRequiredWithoutBookingsNestedInput
+    emailJobs?: EmailJobUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateWithoutUserInput = {
@@ -7476,6 +9507,7 @@ export namespace Prisma {
     refundStatus?: NullableEnumRefundStatusFieldUpdateOperationsInput | $Enums.RefundStatus | null
     refundAmountPaise?: NullableIntFieldUpdateOperationsInput | number | null
     refundProcessedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailJobs?: EmailJobUncheckedUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateManyWithoutUserInput = {
@@ -7544,6 +9576,7 @@ export namespace Prisma {
     refundAmountPaise?: NullableIntFieldUpdateOperationsInput | number | null
     refundProcessedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutBookingsNestedInput
+    emailJobs?: EmailJobUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateWithoutParkingSpaceInput = {
@@ -7567,6 +9600,7 @@ export namespace Prisma {
     refundStatus?: NullableEnumRefundStatusFieldUpdateOperationsInput | $Enums.RefundStatus | null
     refundAmountPaise?: NullableIntFieldUpdateOperationsInput | number | null
     refundProcessedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailJobs?: EmailJobUncheckedUpdateManyWithoutBookingNestedInput
   }
 
   export type BookingUncheckedUpdateManyWithoutParkingSpaceInput = {
@@ -7590,6 +9624,69 @@ export namespace Prisma {
     refundStatus?: NullableEnumRefundStatusFieldUpdateOperationsInput | $Enums.RefundStatus | null
     refundAmountPaise?: NullableIntFieldUpdateOperationsInput | number | null
     refundProcessedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type EmailJobCreateManyBookingInput = {
+    id?: number
+    recipient: string
+    subject: string
+    html: string
+    status?: $Enums.EmailJobStatus
+    attempts?: number
+    nextRetryAt?: Date | string
+    lockedAt?: Date | string | null
+    lastError?: string | null
+    sentAt?: Date | string | null
+    dedupeKey?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmailJobUpdateWithoutBookingInput = {
+    recipient?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    html?: StringFieldUpdateOperationsInput | string
+    status?: EnumEmailJobStatusFieldUpdateOperationsInput | $Enums.EmailJobStatus
+    attempts?: IntFieldUpdateOperationsInput | number
+    nextRetryAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailJobUncheckedUpdateWithoutBookingInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    recipient?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    html?: StringFieldUpdateOperationsInput | string
+    status?: EnumEmailJobStatusFieldUpdateOperationsInput | $Enums.EmailJobStatus
+    attempts?: IntFieldUpdateOperationsInput | number
+    nextRetryAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmailJobUncheckedUpdateManyWithoutBookingInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    recipient?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    html?: StringFieldUpdateOperationsInput | string
+    status?: EnumEmailJobStatusFieldUpdateOperationsInput | $Enums.EmailJobStatus
+    attempts?: IntFieldUpdateOperationsInput | number
+    nextRetryAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

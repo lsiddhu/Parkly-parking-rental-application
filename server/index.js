@@ -12,8 +12,9 @@ const parkingRoutes = require("./routes/parkingRoutes");
 const authRoutes = require("./routes/authRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 const razorpayWebhookRoutes = require("./routes/razorpayWebhookRoutes");
-
 const startBookingCleanup = require("./jobs/bookingCleanup");
+const startEmailWorker = require("./jobs/emailWorker");
+
 
 // CORS configuration
 const normalizeOrigin = (url) => url?.trim().replace(/\/+$/, "");
@@ -106,4 +107,5 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Parkly server running on port ${PORT}`);
   startBookingCleanup();
+  startEmailWorker(); 
 });

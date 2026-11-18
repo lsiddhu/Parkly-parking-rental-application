@@ -209,8 +209,7 @@ const createBooking = async (req, res) => {
   }
 };
 
-
-// VERIFY RAZORPAY PAYMENT SECURELY
+// VERIFY PAYMENT AND CONFIRM BOOKING
 const verifyPayment = async (req, res) => {
   const startedAt = Date.now();
   const bookingId = Number(req.params.id);
@@ -312,9 +311,7 @@ const verifyPayment = async (req, res) => {
     logTime("Signature verification");
 
     // Fetch payment from Razorpay
-    const payment = await razorpay.payments.fetch(
-      razorpay_payment_id
-    );
+    const payment = await razorpay.payments.fetch(razorpay_payment_id);
 
     logTime("Razorpay payment fetch");
 
@@ -350,26 +347,134 @@ const verifyPayment = async (req, res) => {
       });
     }
 
-    // Atomically confirm booking
-    const updated = await prisma.booking.updateMany({
-      where: {
-        id: booking.id,
-        userId: req.user.id,
-        status: "PENDING",
-        paymentStatus: "PENDING",
-        razorpayOrderId: booking.razorpayOrderId,
-      },
-      data: {
-        paymentStatus: "PAID",
-        status: "CONFIRMED",
-        razorpayPaymentId: razorpay_payment_id,
-      },
+    // Atomically confirm booking and queue confirmation email
+    const result = await prisma.$transaction(async (tx) => {
+      const updated = await tx.booking.updateMany({
+        where: {
+          id: booking.id,
+          userId: req.user.id,
+          status: "PENDING",
+          paymentStatus: "PENDING",
+          razorpayOrderId: booking.razorpayOrderId,
+        },
+        data: {
+          paymentStatus: "PAID",
+          status: "CONFIRMED",
+          razorpayPaymentId: razorpay_payment_id,
+        },
+      });
+
+      if (updated.count === 0) {
+        return { updatedCount: 0 };
+      }
+
+      logTime("Booking database update");
+
+      // Fetch confirmed booking details
+      const confirmedBooking = await tx.booking.findUnique({
+        where: {
+          id: booking.id,
+        },
+        include: {
+          user: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
+          parkingSpace: true,
+        },
+      });
+
+      logTime("Confirmation details lookup");
+
+      // Create background email job
+      if (confirmedBooking?.user?.email) {
+        const escapeHtml = (value) =>
+          String(value ?? "").replace(/[&<>"']/g, (char) => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;",
+          })[char]);
+
+        const bookingDateTime = new Date(
+          confirmedBooking.startAt
+        ).toLocaleString("en-IN", {
+          timeZone: "Asia/Kolkata",
+          dateStyle: "long",
+          timeStyle: "short",
+        });
+
+        const html = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; color: #333;">
+            <h2 style="color: #2563eb;">Booking Confirmed!</h2>
+
+            <p>Hi ${escapeHtml(confirmedBooking.user.name)},</p>
+
+            <p>Your payment was successful and your parking booking is confirmed.</p>
+
+            <h3>Booking Details</h3>
+
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">Booking ID</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">#${confirmedBooking.id}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">Parking Space</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">${escapeHtml(confirmedBooking.parkingSpace.name)}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">Address</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">${escapeHtml(confirmedBooking.parkingSpace.address)}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">Date & Time</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">${escapeHtml(bookingDateTime)}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">Duration</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">${confirmedBooking.durationHours} hours</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">Amount Paid</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">₹${confirmedBooking.totalPrice}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">Payment ID</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">${escapeHtml(razorpay_payment_id)}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px;">Payment Status</td>
+                <td style="padding: 10px; color: green;">PAID</td>
+              </tr>
+            </table>
+
+            <p>Thank you for choosing Parkly!</p>
+            <p style="color: #777;">Parkly Team</p>
+          </div>
+        `;
+
+        await tx.emailJob.create({
+          data: {
+            bookingId: confirmedBooking.id,
+            recipient: confirmedBooking.user.email,
+            subject: "Parkly Booking Confirmed - Payment Successful",
+            html,
+            dedupeKey: `booking-confirmation-${confirmedBooking.id}`,
+          },
+        });
+
+        logTime("Confirmation email queued");
+      }
+
+      return { updatedCount: updated.count };
     });
 
-    logTime("Booking database update");
-
-    // Handle simultaneous verification
-    if (updated.count === 0) {
+    // Handle simultaneous verification requests
+    if (result.updatedCount === 0) {
       const latestBooking = await prisma.booking.findUnique({
         where: {
           id: booking.id,
@@ -396,97 +501,6 @@ const verifyPayment = async (req, res) => {
       });
     }
 
-    // Get confirmation details
-    const confirmedBooking = await prisma.booking.findUnique({
-      where: {
-        id: booking.id,
-      },
-      include: {
-        user: {
-          select: {
-            name: true,
-            email: true,
-          },
-        },
-        parkingSpace: true,
-      },
-    });
-
-    logTime("Confirmation details lookup");
-
-    // Send confirmation email
-    // Email failure must not undo or invalidate successful payment.
-    if (confirmedBooking?.user?.email) {
-      try {
-        const bookingDateTime = new Date(
-          confirmedBooking.startAt
-        ).toLocaleString("en-IN", {
-          timeZone: "Asia/Kolkata",
-          dateStyle: "long",
-          timeStyle: "short",
-        });
-
-        await sendEmail({
-          to: confirmedBooking.user.email,
-          subject: "Parkly Booking Confirmed - Payment Successful",
-          html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; color: #333;">
-              <h2 style="color: #2563eb;">Booking Confirmed!</h2>
-
-              <p>Hi ${confirmedBooking.user.name},</p>
-
-              <p>Your payment was successful and your parking booking is confirmed.</p>
-
-              <h3>Booking Details</h3>
-
-              <table style="width: 100%; border-collapse: collapse;">
-                <tr>
-                  <td style="padding: 10px; border-bottom: 1px solid #ddd;">Booking ID</td>
-                  <td style="padding: 10px; border-bottom: 1px solid #ddd;">#${confirmedBooking.id}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 10px; border-bottom: 1px solid #ddd;">Parking Space</td>
-                  <td style="padding: 10px; border-bottom: 1px solid #ddd;">${confirmedBooking.parkingSpace.name}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 10px; border-bottom: 1px solid #ddd;">Address</td>
-                  <td style="padding: 10px; border-bottom: 1px solid #ddd;">${confirmedBooking.parkingSpace.address}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 10px; border-bottom: 1px solid #ddd;">Date & Time</td>
-                  <td style="padding: 10px; border-bottom: 1px solid #ddd;">${bookingDateTime}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 10px; border-bottom: 1px solid #ddd;">Duration</td>
-                  <td style="padding: 10px; border-bottom: 1px solid #ddd;">${confirmedBooking.durationHours} hours</td>
-                </tr>
-                <tr>
-                  <td style="padding: 10px; border-bottom: 1px solid #ddd;">Amount Paid</td>
-                  <td style="padding: 10px; border-bottom: 1px solid #ddd;">₹${confirmedBooking.totalPrice}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 10px; border-bottom: 1px solid #ddd;">Payment ID</td>
-                  <td style="padding: 10px; border-bottom: 1px solid #ddd;">${razorpay_payment_id}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 10px;">Payment Status</td>
-                  <td style="padding: 10px; color: green;">PAID</td>
-                </tr>
-              </table>
-
-              <p>Thank you for choosing Parkly!</p>
-              <p style="color: #777;">Parkly Team</p>
-            </div>
-          `,
-        });
-
-        logTime("Confirmation email sent");
-      } catch (emailError) {
-        console.error("Confirmation email failed:", emailError);
-        logTime("Confirmation email failed");
-      }
-    }
-
     logTime("Total verification completed");
 
     return res.status(200).json({
@@ -495,18 +509,16 @@ const verifyPayment = async (req, res) => {
     });
 
   } catch (error) {
-    logTime("Verification failed");
-    console.error("Payment verification error:", error);
+    console.error("Verify payment error:", error);
+
+    logTime("Payment verification failed");
 
     return res.status(500).json({
       success: false,
-      message:
-        "Unable to verify payment. Please contact support if money was deducted.",
+      message: "Unable to verify payment. Please contact support if payment was deducted.",
     });
   }
 };
-
-
 
 // GET LOGGED-IN USER BOOKINGS
 const getMyBookings = async (req, res) => {

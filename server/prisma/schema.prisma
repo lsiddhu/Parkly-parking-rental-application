@@ -33,6 +33,12 @@ enum RefundStatus {
   PROCESSED
   FAILED
 }
+enum EmailJobStatus {
+  PENDING
+  PROCESSING
+  SENT
+  FAILED
+}
 
 model User {
   id            Int           @id @default(autoincrement())
@@ -104,6 +110,7 @@ model Booking {
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   expiresAt      DateTime?
+  emailJobs      EmailJob[]
 
   @@index([userId])
   @@index([parkingSpaceId, status, startAt, endAt])
@@ -114,4 +121,32 @@ model Booking {
   refundStatus     RefundStatus?
   refundAmountPaise Int?
   refundProcessedAt DateTime?
+}
+
+model EmailJob {
+  id            Int           @id @default(autoincrement())
+
+  bookingId     Int?
+  booking       Booking?      @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+  recipient     String
+  subject       String
+  html          String        @db.Text
+
+  status        EmailJobStatus @default(PENDING)
+  attempts      Int            @default(0)
+
+  nextRetryAt   DateTime       @default(now())
+  lockedAt      DateTime?
+  lastError     String?        @db.Text
+  sentAt        DateTime?
+
+  // Prevent duplicate confirmation emails
+  dedupeKey     String?        @unique
+
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([status, nextRetryAt])
+  @@index([bookingId])
 }

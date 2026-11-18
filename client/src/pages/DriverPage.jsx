@@ -158,8 +158,12 @@ function DriverPage() {
         order_id: orderResult.orderId,
 
         handler: async function (paymentResponse) {
+          const handlerStarted = Date.now();
+          console.log("[Payment] Razorpay handler started");
+
           try {
-            // 4. Verify payment on backend
+            console.time("[Payment] Backend verification");
+
             const verifyResponse = await fetch(
               `${BOOKING_API}/${bookingId}/payment/verify`,
               {
@@ -170,6 +174,14 @@ function DriverPage() {
                 },
                 body: JSON.stringify(paymentResponse),
               }
+            );
+
+            console.timeEnd("[Payment] Backend verification");
+
+            console.log(
+              "[Payment] Response received:",
+              Date.now() - handlerStarted,
+              "ms"
             );
 
             const verifyResult = await verifyResponse.json();
@@ -185,6 +197,7 @@ function DriverPage() {
             );
 
             setBookingError("");
+
             navigate("/booking-success", {
               replace: true,
               state: {
@@ -200,6 +213,7 @@ function DriverPage() {
               },
             });
           } catch (err) {
+            console.error("[Payment] Verification error:", err);
             setBookingError(err.message);
           } finally {
             setBookingLoading(false);
